@@ -1,7 +1,6 @@
 import random
-from locale import currency
 
-class Square:
+class Square(object):
 	def __init__(self):
 		self.NONE = 0
 		self.COMPUTER = 1
@@ -39,12 +38,15 @@ class Square:
 		else:
 			return False
 		
-class Game:
-	def __init__(self):
+class Game(object):
+	def __init__(self, oponent):
 		self.ended = False
-		self.matrix = [[0] * 7 for i in range(7)]
-		for i in range(7):
-			for j in range(7):
+		self.oponent = oponent
+		self.height = 7
+		self.width = 7
+		self.matrix = [[0] * self.width for i in range(self.height)]
+		for i in range(self.width):
+			for j in range(self.height):
 				self.matrix[i][j] = Square()
 		
 	
@@ -79,7 +81,7 @@ class Game:
 		return self.__drop_disc(i, True)
 	
 	def drop_disc_computer(self):
-		i = random.randint(0, 6)
+		i = self.oponent.make_next_move(self)
 		return self.__drop_disc(i, False)
 	
 	def check_victory(self, x, y):

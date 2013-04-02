@@ -3,7 +3,7 @@ from Tkinter import *
 import tkMessageBox
 
 
-class Window:
+class Window(object):
 	def __init__(self, game):
 		self.labels = [[0] * 7 for i in range(7)]
 		self.game = game
@@ -28,6 +28,7 @@ class Window:
 	def __button_callback(self, event):
 		grid_info = event.widget.grid_info()
 		x, y = self.game.drop_disc_human(int(grid_info['column']))
+		self.__update_game()
 		if(not self.game.has_ended()):
 			self.__update_label(x , y)
 			if (self.game.check_victory(x, y)):
@@ -37,7 +38,6 @@ class Window:
 			self.__update_label(x, y)
 			if(self.game.check_victory(x, y)):
 				self.__computer_win()
-			
 
 	def __label_value(self, value):
 		if(value == 1):
@@ -46,6 +46,11 @@ class Window:
 			return 'X'
 		else :
 			return '-'
+
+	def __update_game(self):
+		for i in range(self.game.width):
+			for k in range(self.game.height):
+				self.labels[i][k]['text'] = self.__label_value(self.game.get(i, k))
 
 	def __update_label(self, x, y):
 		self.__label_value(self.game.get(x, y))
