@@ -3,7 +3,7 @@ from random import randint
 
 class Oponent(object):
 
-	def make_next_move(self, game):
+	def make_move(self, game):
 		tree = MinmaxTree(self.objective_func)
 		tree.build()
 		i = tree.root.value

@@ -4,8 +4,8 @@ from oponent import Oponent
 
 def main():
 	comp = Oponent()
-	game = Game(comp)
-	w = Window(game)
+	game = Game()
+	w = Window(game, comp)
 	w.show()
 	
 if __name__ == "__main__":

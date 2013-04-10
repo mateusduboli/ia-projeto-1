@@ -4,10 +4,11 @@ import tkMessageBox
 
 
 class Window(object):
-	def __init__(self, game):
+	def __init__(self, game, oponent):
 		self.labels = [[0] * 7 for i in range(7)]
 		self.game = game
 		self.root = Tk()
+		self.oponent = oponent
 		self.root.title("Lig 4 - Minimax")
 		self.frame = Frame(self.root)
 		self.frame.pack()
@@ -27,14 +28,14 @@ class Window(object):
 
 	def __button_callback(self, event):
 		grid_info = event.widget.grid_info()
-		x, y = self.game.drop_disc_human(int(grid_info['column']))
+		x, y = self.game.drop_disc(int(grid_info['column']))
 		self.__update_game()
 		if(not self.game.has_ended()):
 			self.__update_label(x , y)
 			if (self.game.check_victory(x, y)):
 				self.__human_win()
 		if(not self.game.has_ended()):
-			x, y = self.game.drop_disc_computer()
+			x, y = self.game.drop_disc(self.oponent.make_move(self.game))
 			self.__update_label(x, y)
 			if(self.game.check_victory(x, y)):
 				self.__computer_win()
@@ -58,11 +59,9 @@ class Window(object):
 
 	def __human_win(self):
 		tkMessageBox.showinfo("Vitoria", "Voce venceu!")
-		self.game.end_game()
 		
 	def __computer_win(self):
 		tkMessageBox.showinfo("Derrota", "Voce perdeu")
-		self.game.end_game()
 		
 	def show(self):
 		self.root.mainloop()

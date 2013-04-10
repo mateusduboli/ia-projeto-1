@@ -1,5 +1,4 @@
-import random
-
+import copy
 class Square(object):
 	def __init__(self):
 		self.NONE = 0
@@ -39,9 +38,9 @@ class Square(object):
 			return False
 		
 class Game(object):
-	def __init__(self, oponent):
+	def __init__(self):
 		self.ended = False
-		self.oponent = oponent
+		self.human_move = True
 		self.height = 7
 		self.width = 7
 		self.matrix = [[0] * self.width for i in range(self.height)]
@@ -50,56 +49,65 @@ class Game(object):
 				self.matrix[i][j] = Square()
 		
 	
-	def end_game(self):
+	def __end_game(self):
 		self.ended = True
 	
 	def has_ended(self):
 		return self.ended
 	
-	def __drop_disc(self, i, isHuman):
-		k = 6
-		
-		while (k != -1) and (self.matrix[k][i] != 0):
-			k = k - 1
-		if(k != -1):
-			if(isHuman):
-				self.matrix[k][i].mark_human()
+	def drop_disc(self, j):
+		i = 6		
+		while (i != -1) and (self.get(i, j) != 0):
+			i = i - 1
+		if(i != -1):
+			if(self.human_move):
+				self.get(i, j).mark_human()
+				self.human_move = False
 			else:
-				self.matrix[k][i].mark_computer()
+				self.get(i, j).mark_computer()
+				self.human_move = True
 		else :
-			k, i = -1, -1
-		return k, i
+			i, j = -1, -1
+		return i, j
 
 	def get(self, i, j):
-		return self.matrix[i][j]
+		if i in range(0, 7) and j in range(0, 7):
+			return self.matrix[i][j]
+		else:
+			return None
 	
 	def print_matrix(self):
 		for row in self.matrix:
 			print row	
 
-	def drop_disc_human(self, i):
-		return self.__drop_disc(i, True)
-	
-	def drop_disc_computer(self):
-		i = self.oponent.make_next_move(self)
-		return self.__drop_disc(i, False)
-	
 	def check_victory(self, x, y):
 		lack = 4 # Lack for victory
 		new_disc = self.get(x, y)
 		for i in range(-1, 2):
-			for k in range(-1, 2):
+			for j in range(-1, 1):
+				if i == 0 and j == 0:
+					continue
+				revert = False
 				lack = 4
 				current_disc = new_disc
-				_x, _y = x, y
-				while (new_disc == current_disc) and lack > 0:
-					lack = lack - 1
-					_x, _y = _x + i, _y + k
-					if (0 <= _x <= 6) and (0 <= _y <= 6) and not(_x == x and _y == y):
-						current_disc = self.get(_x, _y)
-						print current_disc, _x, _y
-					else:
-						break
-				if lack == 0:
-					return True
+				_x, _y, _i, _j = x, y, i, j
+				while True:
+					if lack == 0:
+						self.__end_game()
+						return True
+					if current_disc <> new_disc :
+						if(revert):
+							break
+						else:
+							revert = True
+							_x, _y = x, y
+							_i, _j = i * -1, j * -1
+					else :
+						lack = lack - 1
+					_x, _y = _x + _i, _y + _j
+					current_disc = self.get(_x, _y)
+					print current_disc, _x, _y
 		return False
+	
+	def copy(self):
+		return copy.deepcopy(self)
