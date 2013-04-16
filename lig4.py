@@ -1,4 +1,5 @@
 import copy
+
 class Square(object):
 	NONE = 0
 	COMPUTER = 1
@@ -20,7 +21,7 @@ class Square(object):
 			return "C"
 		else :
 			return "N"
-		
+
 	def __repr__(self):
 		return str(self)
 	
@@ -29,7 +30,7 @@ class Square(object):
 			return True
 		else :
 			return False
-		
+
 	def __eq__(self, b):
 		if(type(b) is Square):
 			return self.value == b.value
@@ -37,7 +38,7 @@ class Square(object):
 			return True
 		else:
 			return False
-		
+
 class Game(object):
 	def __init__(self):
 		self.ended = False
@@ -49,15 +50,15 @@ class Game(object):
 		for i in range(self.width):
 			for j in range(self.height):
 				self.matrix[i][j] = Square()
-		
-	
+
+
 	def __end_game(self):
 		self.ended = True
 		self.winner = Square.COMPUTER if self.human_move else Square.HUMAN 
-	
+
 	def has_ended(self):
 		return self.ended
-	
+
 	def drop_disc(self, j):
 		i = 6		
 		while (i <> -1) and (self.get(i, j) != 0):
@@ -69,6 +70,7 @@ class Game(object):
 			else:
 				self.get(i, j).mark_computer()
 				self.human_move = True
+			self.check_victory(i, j)
 		else :
 			i, j = -1, -1
 		return i, j
@@ -78,14 +80,11 @@ class Game(object):
 			return self.matrix[i][j]
 		else:
 			return None
-	
+
 	def print_matrix(self):
 		for row in self.matrix:
-			print row	
+			print row
 
-	def winner(self):
-		return self.winner
-	
 	def check_victory(self, x, y):
 		lack = 4 # Lack for victory
 		new_disc = self.get(x, y)
@@ -101,7 +100,7 @@ class Game(object):
 					if lack == 0:
 						self.__end_game()
 						return True
-					if current_disc <> new_disc :
+					if current_disc <> new_disc or new_disc == None:
 						if(revert):
 							break
 						else:
@@ -113,6 +112,6 @@ class Game(object):
 					_x, _y = _x + _i, _y + _j
 					current_disc = self.get(_x, _y)
 		return False
-	
+
 	def copy(self):
 		return copy.deepcopy(self)

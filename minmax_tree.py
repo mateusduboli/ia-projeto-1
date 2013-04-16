@@ -1,14 +1,16 @@
-
 class MinmaxTreeNode(object):
 
 	def __init__(self, is_max_node):
-		self.obj_value = 0
-		self.move = -1
+		if is_max_node:
+			self.obj_value = float("-inf")
+		else:
+			self.obj_value = float("inf")
 		self.alpha = float("-inf")
 		self.beta = float("inf")
 		self.childs = []
 		self.is_leaf = False
 		self.is_max_node = is_max_node
+		self.state = None
 		self.value = -1
 
 	def add(self, child):
@@ -42,47 +44,37 @@ class MinmaxTree(object):
 		self.depth = depth	
 		self.obj_func = obj_func
 
-	def build(self, game, root, depth):
-		if depth >= self.depth:
+	def build(self, game):
+		self.root = self.__rec_build(game, self.root, 0)
+		
+	def __rec_build(self, game, root, depth):
+		if depth >= self.depth or game.has_ended():
 			root.is_leaf = True
 			root.obj_value = self.obj_func(game)
 			return root
 		root.state = game
+		temp_obj_value = root.obj_value
 		for i in range(0, 7):
 			new_node = MinmaxTreeNode(not root.is_max())
+			new_game = game.copy()
 			new_node.value = i
-			new_node.state = game.copy()
-			x, y = new_node.state.drop_disc(i)
+			x, y = new_game.drop_disc(i)
 			if not ((x, y) == (-1, -1)):
-				new_node.state.check_victory(x, y)
-				if new_node.state.has_ended():
-					new_node.is_leaf = True
-					new_node.obj_value = self.obj_func(game)
+				new_node.state = new_game
+				root.add(self.__rec_build(new_game, new_node, depth + 1))
+				if root.is_max():
+					root.alpha = max(root.alpha, new_node.obj_value)
+					temp_obj_value = max(root.obj_value, new_node.obj_value)
 				else :
-					root.add(self.build(new_node.state, new_node, depth + 1))
-				if new_node.is_max():
-					root.alpha = min(root.alpha, new_node.value) 
-				else :
-					root.beta = max(root.beta, new_node.obj_value)
-			else:
-				return root
+					root.beta = min(root.beta, new_node.obj_value)
+					temp_obj_value = min(root.obj_value, new_node.obj_value)
+				if temp_obj_value <> root.obj_value:
+					root.obj_value = temp_obj_value
+					root.value = new_node.value
+				if root.alpha >= root.beta:
+					break
 		return root
 	
-	def calculate(self):
-		self.root.obj_value = self.__calculate(self.root, self.depth)
-		
-	def __calculate(self, node, depth):
-		if(depth <= 0 or node.is_leaf):
-			node.obj_value = self.obj_func(node.state)
-			return node.obj_value
-		else :
-			alpha = node.alpha
-			for c in node.childs:
-				if(-self.__calculate(c, depth - 1) >= alpha):
-					node.value = c.value
-					node.obj_value = c.obj_value
-		return alpha
-
 	def __str__(self):
 		return str(self.root)
 

@@ -1,5 +1,6 @@
 from Tkconstants import CENTER
 from Tkinter import *
+from lig4 import Square
 import tkMessageBox
 
 
@@ -32,13 +33,13 @@ class Window(object):
 		self.__update_game()
 		if(not self.game.has_ended()):
 			self.__update_label(x , y)
-			if (self.game.check_victory(x, y)):
-				self.__human_win()
-		if(not self.game.has_ended()):
 			x, y = self.game.drop_disc(self.oponent.make_move(self.game))
 			self.__update_label(x, y)
-			if(self.game.check_victory(x, y)):
+		if self.game.has_ended():
+			if self.game.winner == Square.COMPUTER:
 				self.__computer_win()
+			else:
+				self.__human_win()
 
 	def __label_value(self, value):
 		if(value == 1):

@@ -7,6 +7,6 @@ def main():
 	game = Game()
 	w = Window(game, comp)
 	w.show()
-	
+
 if __name__ == "__main__":
 	main()
