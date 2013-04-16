@@ -17,10 +17,14 @@ class Square( object ):
 	def __init__( self ):
 		self.mark = Square.NONE
 		self.horizontal = [1]
+		self.h_factor = 2
 		self.vertical = [1]
+		self.v_factor = 2
 		self.maindiag = [1]
+		self.m_factor = 2
 		self.optdiag = [1]
-		self.value = 4
+		self.o_factor = 2
+		self.value = [4]
 
 	def mark_human( self ):
 		self.mark = Square.HUMAN
@@ -28,11 +32,16 @@ class Square( object ):
 	def mark_computer( self ):
 		self.mark = Square.COMPUTER
 
+	def __weight_value(self):
+		big = max(self.horizontal[0], self.vertical[0], self.maindiag[0], self.optdiag[0])
+		self.value[0] = big * (self.horizontal[0] * self.h_factor + self.vertical[0] * self.v_factor + self.maindiag[0] * self.m_factor + self.optdiag[0] * self.o_factor)
+		self.value[0] = (self.value[0] * -1) ^ 3 if self.mark == Square.HUMAN else self.value[0]
+
 	def update_value( self, x, y, other ):
 		if( other == Square.NONE or other == None ):
 			return False
 		elif( x, y == Square.HORIZONTAL ):
-			self.value = self.value - self.horizontal[0]
+			self.value[0] = self.value[0] - self.horizontal[0]
 			if other == self :
 				if other.horizontal[0] >= self.horizontal[0]:
 					self.horizontal = other.horizontal
@@ -40,13 +49,14 @@ class Square( object ):
 				else:
 					other.horizontal = self.horizontal
 					self.horizontal[0] = self.horizontal[0] + 1
-				self.value = self.value + self.horizontal[0]
+				self.__weight_value()
 			else:
-				self.horizontal[0] = 0
+				self.h_factor = self.h_factor - 1
+				other.h_factor = other.h_factor - 1
 				return False
 			return True
 		elif( x, y == Square.IHORIZONTAL ):
-			self.value = self.value - self.horizontal[0]
+			self.value[0] = self.value[0] - self.horizontal[0]
 			if other == self:
 				if other.horizontal[0] >= self.horizontal[0]:
 					self.horizontal = other.horizontal
@@ -54,13 +64,14 @@ class Square( object ):
 				else:
 					other.horizontal = self.horizontal
 					self.horizontal[0] = self.horizontal[0] + 1
-				self.value = self.value + self.horizontal[0]
+				self.__weight_value()
 			else:
-				self.horizontal[0] = 0
+				self.h_factor = self.h_factor - 1
+				other.h_factor = other.h_factor - 1
 				return False
 			return True
 		elif( x, y == Square.VERTICAL ):
-			self.value = self.value - self.vertical[0]
+			self.value[0] = self.value[0] - self.vertical[0]
 			if other == self:
 				if other.vertical[0] >= self.vertical[0]:
 					self.vertical = other.vertical
@@ -68,13 +79,14 @@ class Square( object ):
 				else:
 					other.vertical = self.vertical
 					self.vertical[0] = self.vertical[0] + 1
-				self.value = self.value + self.vertical[0]
+				self.__weight_value()
 			else:
-				self.vertical[0] = 0
+				self.v_factor = self.v_factor - 1
+				other.v_factor = other.v_factor - 1
 				return False
 			return True
 		elif( x, y == Square.IVERTICAL ):
-			self.value = self.value - self.vertical[0]
+			self.value[0] = self.value[0] - self.vertical[0]
 			if other == self:
 				if other.vertical[0] >= self.vertical[0]:
 					self.vertical = other.vertical
@@ -82,13 +94,14 @@ class Square( object ):
 				else:
 					other.vertical = self.vertical
 					self.vertical[0] = self.vertical[0] + 1
-				self.value = self.value + self.vertical[0]
+				self.__weight_value()
 			else:
-				self.vertical[0] = 0
+				self.v_factor = self.v_factor - 1
+				other.v_factor = other.v_factor - 1
 				return False
 			return True
 		elif( x, y == Square.MAINDIAG ):
-			self.value = self.value - self.maindiag[0]
+			self.value[0] = self.value[0] - self.maindiag[0]
 			if other == self:
 				if other.maindiag[0] >= self.maindiag[0]:
 					self.maindiag = other.maindiag
@@ -96,13 +109,14 @@ class Square( object ):
 				else:
 					other.maindiag = self.maindiag
 					self.maindiag[0] = self.maindiag[0] + 1
-				self.value = self.value + self.maindiag[0]
+				self.__weight_value()
 			else:
-				self.maindiag[0] = 0
+				self.m_factor = self.m_factor - 1
+				other.m_factor = other.m_factor - 1
 				return False
 			return True
 		elif( x, y == Square.IMAINDIAG ):
-			self.value = self.value - self.maindiag[0]
+			self.value[0] = self.value[0] - self.maindiag[0]
 			if other == self:
 				if other.maindiag[0] >= self.maindiag[0]:
 					self.maindiag = other.maindiag
@@ -110,13 +124,14 @@ class Square( object ):
 				else:
 					other.maindiag = self.maindiag
 					self.maindiag[0] = self.maindiag[0] + 1
-				self.value = self.value + self.maindiag[0]
+				self.__weight_value()
 			else:
-				self.maindiag[0] = 0
+				self.m_factor = self.m_factor - 1
+				other.m_factor = other.m_factor - 1
 				return False
 			return True
 		elif( x, y == Square.OPTDIAG ):
-			self.value = self.value - self.optdiag[0]
+			self.value[0] = self.value[0] - self.optdiag[0]
 			if other == self:
 				if other.optdiag[0] >= self.optdiag[0]:
 					self.optdiag = other.optdiag
@@ -124,13 +139,14 @@ class Square( object ):
 				else:
 					other.optdiag = self.optdiag
 					self.optdiag[0] = self.optdiag[0] + 1
-				self.value = self.value + self.optdiag[0]
+				self.__weight_value()
 			else:
-				self.optdiag[0] = 0
+				self.o_factor = self.o_factor - 1
+				other.o_factor = other.o_factor - 1
 				return False
 			return True
 		elif( x, y == Square.IOPTDIAG ):
-			self.value = self.value - self.optdiag[0]
+			self.value[0] = self.value[0] - self.optdiag[0]
 			if other == self :
 				if other.optdiag[0] >= self.optdiag[0]:
 					self.optdiag = other.optdiag
@@ -138,9 +154,10 @@ class Square( object ):
 				else:
 					other.optdiag = self.optdiag
 					self.optdiag[0] = self.optdiag[0] + 1
-				self.value = self.value + self.optdiag[0]
+				self.__weight_value()
 			else:
-				self.optdiag[0] = 0
+				self.o_factor = self.o_factor - 1
+				other.o_factor = other.o_factor - 1
 				return False
 			return True
 
@@ -175,9 +192,9 @@ class Game( object ):
 		self.human_move = True
 		self.winner = None
 		self.height = 7
-		self.width = 7
-		self.value = 0
-		self.matrix = [[0] * self.width for i in range( self.height )]
+		self.width = 6
+		self.value = [0]
+		self.matrix = [[0] * self.height for i in range( self.width )]
 		for i in range( self.width ):
 			for j in range( self.height ):
 				self.matrix[i][j] = Square()
@@ -191,7 +208,7 @@ class Game( object ):
 		return self.ended
 
 	def drop_disc( self, j ):
-		i = 6
+		i = 5
 		while ( i <> -1 ) and ( self.get( i, j ) != 0 ):
 			i = i - 1
 		if( i <> -1 ):
@@ -206,8 +223,11 @@ class Game( object ):
 			i, j = -1, -1
 		return i, j
 
+	def get_value(self):
+		return self.value[0]
+
 	def get( self, i, j ):
-		if i in range( 0, 7 ) and j in range( 0, 7 ):
+		if i in range( 0, 6 ) and j in range( 0, 7 ):
 			return self.matrix[i][j]
 		else:
 			return None
@@ -242,7 +262,7 @@ class Game( object ):
 						lack = lack - 1
 					_x, _y = _x + _i, _y + _j
 					current_disc = self.get( _x, _y )
-		if( self.value < new_disc.value ):
+		if( self.value[0] < new_disc.value[0] ):
 			self.value = new_disc.value
 			self.winner = new_disc.mark
 		return self.ended

@@ -6,16 +6,18 @@ import tkMessageBox
 
 class Window(object):
 	def __init__(self, game, oponent):
-		self.labels = [[0] * 7 for i in range(7)]
+		self.labels = [[0] * 7 for i in range(6)]
 		self.game = game
 		self.root = Tk()
 		self.oponent = oponent
 		self.root.title("Lig 4 - Minimax")
 		self.frame = Frame(self.root)
 		self.frame.pack()
-		for i in range(7):
+		for i in range(6):
 			for j in range(7):
 				self.labels[i][j] = self.__init_label(i, j)
+#		x, y = self.game.drop_disc(self.oponent.make_move(self.game))
+#		self.__update_label(x, y)
 
 	def __init_label(self, i, j):
 		label = Label(self.frame, name=str(i) + ", " + str(j))

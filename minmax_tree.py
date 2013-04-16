@@ -7,7 +7,7 @@ class MinmaxTree( object ):
 		self.obj_func = obj_func
 		self.value = float( "-Inf" )
 		self.order = range( 7 )
-#		shuffle( self.order )
+		shuffle( self.order )
 
 	def build( self, game ):
 		self.value = self.__rec_build( game, 0, True, float( "-Inf" ), float( "Inf" ) )
@@ -40,9 +40,10 @@ class MinmaxTree( object ):
 					temp_obj_value = min( obj_value, new_obj_value )
 				if temp_obj_value <> obj_value:
 					obj_value = temp_obj_value
-					self.move = i
-				if alpha >= beta:
+					move = i
+				if n_alpha >= n_beta:
 					break
+		self.move = move
 		return obj_value
 
 	def __str__( self ):

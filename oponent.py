@@ -3,10 +3,12 @@ from lig4 import Square
 
 class Oponent( object ):
 
+	def __init__(self):
+		self.tree = MinmaxTree( self.objective_func, 6)
+		
 	def make_move( self, game ):
-		tree = MinmaxTree( self.objective_func, 4 )
-		tree.build( game )
-		return tree.move
+		self.tree.build( game )
+		return self.tree.move
 
 	def objective_func( self, game ):
-		return game.value if game.winner == Square.COMPUTER else -game.value
+		return game.get_value() 
