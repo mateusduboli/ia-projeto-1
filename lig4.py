@@ -31,7 +31,7 @@ class Square( object ):
 	def update_value( self, x, y, other ):
 		if( other == Square.NONE or other == None ):
 			return False
-		if( x, y == Square.HORIZONTAL ):
+		elif( x, y == Square.HORIZONTAL ):
 			self.value = self.value - self.horizontal[0]
 			if other == self :
 				if other.horizontal[0] >= self.horizontal[0]:
@@ -45,7 +45,7 @@ class Square( object ):
 				self.horizontal[0] = 0
 				return False
 			return True
-		if( x, y == Square.IHORIZONTAL ):
+		elif( x, y == Square.IHORIZONTAL ):
 			self.value = self.value - self.horizontal[0]
 			if other == self:
 				if other.horizontal[0] >= self.horizontal[0]:
@@ -59,7 +59,7 @@ class Square( object ):
 				self.horizontal[0] = 0
 				return False
 			return True
-		if( x, y == Square.VERTICAL ):
+		elif( x, y == Square.VERTICAL ):
 			self.value = self.value - self.vertical[0]
 			if other == self:
 				if other.vertical[0] >= self.vertical[0]:
@@ -73,7 +73,7 @@ class Square( object ):
 				self.vertical[0] = 0
 				return False
 			return True
-		if( x, y == Square.IVERTICAL ):
+		elif( x, y == Square.IVERTICAL ):
 			self.value = self.value - self.vertical[0]
 			if other == self:
 				if other.vertical[0] >= self.vertical[0]:
@@ -87,7 +87,7 @@ class Square( object ):
 				self.vertical[0] = 0
 				return False
 			return True
-		if( x, y == Square.MAINDIAG ):
+		elif( x, y == Square.MAINDIAG ):
 			self.value = self.value - self.maindiag[0]
 			if other == self:
 				if other.maindiag[0] >= self.maindiag[0]:
@@ -101,7 +101,7 @@ class Square( object ):
 				self.maindiag[0] = 0
 				return False
 			return True
-		if( x, y == Square.IMAINDIAG ):
+		elif( x, y == Square.IMAINDIAG ):
 			self.value = self.value - self.maindiag[0]
 			if other == self:
 				if other.maindiag[0] >= self.maindiag[0]:
@@ -115,7 +115,7 @@ class Square( object ):
 				self.maindiag[0] = 0
 				return False
 			return True
-		if( x, y == Square.OPTDIAG ):
+		elif( x, y == Square.OPTDIAG ):
 			self.value = self.value - self.optdiag[0]
 			if other == self:
 				if other.optdiag[0] >= self.optdiag[0]:
@@ -129,7 +129,7 @@ class Square( object ):
 				self.optdiag[0] = 0
 				return False
 			return True
-		if( x, y == Square.IOPTDIAG ):
+		elif( x, y == Square.IOPTDIAG ):
 			self.value = self.value - self.optdiag[0]
 			if other == self :
 				if other.optdiag[0] >= self.optdiag[0]:

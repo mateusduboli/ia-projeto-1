@@ -1,86 +1,49 @@
 from random import shuffle
-class MinmaxTreeNode( object ):
-
-	def __init__( self, is_max_node ):
-		if is_max_node:
-			self.obj_value = float( "-inf" )
-		else:
-			self.obj_value = float( "inf" )
-		self.alpha = float( "-inf" )
-		self.beta = float( "inf" )
-		self.childs = []
-		self.is_leaf = False
-		self.is_max_node = is_max_node
-		self.state = None
-		self.value = -1
-
-	def add( self, child ):
-		self.childs.append( child )
-
-	def cut( self, child ):
-		self.childs.remove( child )
-
-	def is_max( self ):
-		return self.is_max_node
-
-	def __getitem__( self, i ):
-		return self.childs[i]
-
-	def __str__( self ):
-		my_str = "{ "
-		my_str = my_str + " \"t\" : \"" + ( "MAX " if self.is_max_node else "MIN" ) + "\", "
-		my_str = my_str + " \"v\" : \"" + str( self.value ) + "\", "
-		my_str = my_str + " \"a\" : \"" + str( self.alpha ) + "\", "
-		my_str = my_str + " \"b\" : \"" + str( self.beta ) + "\", "
-		my_str = my_str + " \"o\" : \"" + str( self.obj_value ) + "\""
-		if( not self.is_leaf ):
-			my_str = my_str + ", \"childs\" : [ "
-			for child in self.childs:
-				my_str = my_str + ", " + str( child )
-			my_str = my_str + " ]"
-		my_str = my_str + " }"
-		return my_str
 
 class MinmaxTree( object ):
 
 	def __init__( self, obj_func, depth ):
-		self.root = MinmaxTreeNode( True )
 		self.depth = depth
 		self.obj_func = obj_func
+		self.value = float( "-Inf" )
+		self.order = range( 7 )
+#		shuffle( self.order )
 
 	def build( self, game ):
-		self.root = self.__rec_build( game, self.root, 0 )
+		self.value = self.__rec_build( game, 0, True, float( "-Inf" ), float( "Inf" ) )
+		print self.value, self.move
 
-
-	def __rec_build( self, game, root, depth ):
+	def __rec_build( self, game, depth, is_max, alpha, beta ):
 		if depth >= self.depth or game.has_ended():
-			root.is_leaf = True
-			root.obj_value = self.obj_func( game )
-			return root
-		root.state = game
-		temp_obj_value = root.obj_value
-		order = range( 7 )
-		shuffle( order )
-		for i in order :
-			new_node = MinmaxTreeNode( not root.is_max() )
+			obj_value = self.obj_func( game )
+			return obj_value
+		n_alpha = alpha
+		n_beta = beta
+		move = -1
+		state = game
+		if is_max :
+			obj_value = float( "-inf" )
+		else:
+			obj_value = float( "inf" )
+		temp_obj_value = obj_value
+		for i in self.order :
 			new_game = game.copy()
-			new_node.value = i
 			x, y = new_game.drop_disc( i )
 			if not ( ( x, y ) == ( -1, -1 ) ):
-				new_node.state = new_game
-				root.add( self.__rec_build( new_game, new_node, depth + 1 ) )
-				if root.is_max():
-					root.alpha = max( root.alpha, new_node.obj_value )
-					temp_obj_value = max( root.obj_value, new_node.obj_value )
+				new_state = new_game
+				new_obj_value = self.__rec_build( new_game, depth + 1, not is_max, n_alpha, n_beta )
+				if is_max:
+					n_alpha = max( n_alpha, new_obj_value )
+					temp_obj_value = max( obj_value, new_obj_value )
 				else :
-					root.beta = min( root.beta, new_node.obj_value )
-					temp_obj_value = min( root.obj_value, new_node.obj_value )
-				if temp_obj_value <> root.obj_value:
-					root.obj_value = temp_obj_value
-					root.value = new_node.value
-				if root.alpha >= root.beta:
+					n_beta = min( n_beta, new_obj_value )
+					temp_obj_value = min( obj_value, new_obj_value )
+				if temp_obj_value <> obj_value:
+					obj_value = temp_obj_value
+					self.move = i
+				if alpha >= beta:
 					break
-		return root
+		return obj_value
 
 	def __str__( self ):
 		return str( self.root )
